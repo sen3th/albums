@@ -48,3 +48,15 @@ export async function searchReleaseGroups (params:{
         limit,
     });
 }
+
+export async function getArtistReleaseGroups(params: {
+    artistId: string;
+    limit?: number;
+}): Promise<MusicBrainzReleaseGroupSearchResponse>{
+    const { artistId, limit = 25 } = params;
+
+    return mbGetJson<MusicBrainzReleaseGroupSearchResponse>("/release-group", {
+        query: `arid:${artistId}`,
+        limit,
+    });
+}
