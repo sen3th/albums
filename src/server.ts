@@ -10,8 +10,8 @@ app.get("/health", (_req, res) =>{
     res.json({ ok: true});
 });
 
-app.use("/search", searchRouter);
+app.use("/api/search", searchRouter);
 
 app.listen(config.port, ()=>{
-    console.log(`runing on https://localhost:${config.port}`);
+    console.log(`runing on http://localhost:${config.port}`);
 });
