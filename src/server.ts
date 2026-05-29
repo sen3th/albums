@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import {config} from "./config";
 import { searchRouter } from "./routes/search";
+import { similarRouter } from "./routes/similar";
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,7 @@ app.get("/health", (_req, res) =>{
 });
 
 app.use("/api/search", searchRouter);
+app.use("/api/similar", similarRouter);
 
 app.listen(config.port, ()=>{
     console.log(`runing on http://localhost:${config.port}`);
