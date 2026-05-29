@@ -40,8 +40,8 @@ export async function searchReleaseGroups (params:{
     limit?: number;
 }): Promise<MusicBrainzReleaseGroupSearchResponse>{
     const {album, artist, limit = 5} = params;
-    const qParts = [`releasegroup: "${album}"`];
-    if (artist && artist.trim()) qParts.push(`artist: "${artist.trim()}"`);
+    const qParts = [`releasegroup:"${album}"`];
+    if (artist && artist.trim()) qParts.push(`artist:"${artist.trim()}"`);
     
     return mbGetJson<MusicBrainzReleaseGroupSearchResponse>("/release-group", {
         query: qParts.join(" AND "),
