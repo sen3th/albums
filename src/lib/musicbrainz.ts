@@ -1,4 +1,5 @@
 import {config} from "../config";
+import {MusicBrainzReleaseGroupSearchResponse} from "../types/musicbrainz"
 
 const BASE_URL = "https://musicbrainz.org/ws/2";
 
@@ -31,4 +32,19 @@ export async function mbGetJson<T>(
         throw new Error(`musicbrainz error ${res.status}: ${body || res.statusText}`);
     }
     return (await res.json()) as T;
+}
+
+export async function searchReleaseGroups (params:{
+    album: string;
+    artist?: string;
+    limit?: number;
+}): Promise<MusicBrainzReleaseGroupSearchResponse>{
+    const {album, artist, limit = 5} = params;
+    const qParts = [`releasegroup: "${album}"`];
+    if (artist && artist.trim()) qParts.push(`artist: "${artist.trim()}"`);
+    
+    return mbGetJson<MusicBrainzReleaseGroupSearchResponse>("/release-group", {
+        query: qParts.join(" AND "),
+        limit,
+    });
 }
