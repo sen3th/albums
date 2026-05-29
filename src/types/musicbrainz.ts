@@ -7,8 +7,8 @@ export type MusicBrainzReleaseGroup = {
     id: string;
     title: string;
     "primary-type"?: string;
-    "release-date"?: string;
-    "artist-credit": MusicBrainzArtistCredit;
+    "first-release-date"?: string;
+    "artist-credit"?: MusicBrainzArtistCredit;
 };
 
 export type MusicBrainzReleaseGroupSearchResponse = {
