@@ -21,3 +21,35 @@ function renderResults(items){
         resultsEl.appendChild(li);
     }
 }
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const album = document.getElementById("album").ariaValueMax.trim();
+    const artist = document.getElementById("artist").ariaValueMax.trim();
+
+    setStatus("searching..");
+    renderSeed(null);
+    renderResults([]);
+
+    const url = new URL(`${API_BASE}/api/similar/from-album`);
+    url.searchParams.set("album", album);
+    if (artist) url.searchParams.set("artist", artist);
+    url.searchParams.set("limit", "25");
+    url.searchParams.set("albumsOnly", "1");
+
+    try {
+        const res = await fetch(url.toString());
+        const data = await res.json();
+
+        if (data.error){
+            setStatus(`error: ${data.error}`);
+            return;
+        }
+        renderSeed(data.seed);
+        renderResults(data.items || []);
+        setStatus(`done. found ${(data.items || []).length} results.`);
+    } catch {
+        setStatus("cant reach the api");
+    }
+});
