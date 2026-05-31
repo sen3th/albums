@@ -11,6 +11,9 @@ similarRouter.get("/by-artist", async (req, res) => {
     const limitRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : 25;
     const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 25;
 
+    const albumsOnlyRaw = typeof req.query.albumsOnly === "string" ? req.query.albumsOnly : "1";
+    const albumsOnly = albumsOnlyRaw !== "0";
+
     if (!artistId.trim()){
         return res.json({ error: "artistId is required"});
     }
@@ -19,6 +22,7 @@ similarRouter.get("/by-artist", async (req, res) => {
         const data = await getArtistReleaseGroups({ artistId: artistId.trim(), limit});
         const items = data["release-groups"]
             .filter((rg) => (exclude ? rg.id !== exclude : true))
+            .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
             .map((rg)=>({
                 id: rg.id,
                 title: rg.title,
@@ -38,6 +42,9 @@ similarRouter.get("/from-album", async (req, res) => {
 
     const limitRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : 25;
     const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 25;
+
+    const albumsOnlyRaw = typeof req.query.albumsOnly === "string" ? req.query.albumsOnly : "1";
+    const albumsOnly = albumsOnlyRaw !== "0";
 
     if (!album.trim()){
         return res.json({ error: "album is required"});
@@ -60,6 +67,7 @@ similarRouter.get("/from-album", async (req, res) => {
 
         const items = sim["release-groups"]
             .filter((rg) => rg.id !== seed.id)
+            .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
             .map((rg) => ({
                 id: rg.id,
                 title: rg.title,
