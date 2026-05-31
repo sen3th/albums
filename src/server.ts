@@ -16,6 +16,6 @@ app.get("/health", (_req, res) =>{
 app.use("/api/search", searchRouter);
 app.use("/api/similar", similarRouter);
 
-app.listen(config.port, ()=>{
+app.listen(config.port, "0.0.0.0", ()=>{
     console.log(`runing on http://localhost:${config.port}`);
 });
