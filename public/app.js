@@ -1,16 +1,16 @@
 const API_BASE = "https://albums-ueia.onrender.com";
 
-const form = document.querySelector("form");
-const statusEl = document.querySelector("status");
-const seedEl = document.querySelector("seed");
-const resultsEl = document.querySelector("results");
+const form = document.querySelector("#form");
+const statusEl = document.querySelector("#status");
+const seedEl = document.querySelector("#seed");
+const resultsEl = document.querySelector("#results");
 
 function setStatus(text){
     statusEl.textContent = text || "";
 }
 
 function renderSeed(seed){
-    seedEl.textContent = seed ? JSON.strinfigy(seed, null, 2) : "-";
+    seedEl.textContent = seed ? JSON.stringify(seed, null, 2) : "-";
 }
 
 function renderResults(items){
@@ -25,8 +25,8 @@ function renderResults(items){
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const album = document.getElementById("album").ariaValueMax.trim();
-    const artist = document.getElementById("artist").ariaValueMax.trim();
+    const album = document.getElementById("album").value.trim();
+    const artist = document.getElementById("artist").value.trim();
 
     setStatus("searching..");
     renderSeed(null);
