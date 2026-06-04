@@ -52,3 +52,33 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     margin: 0 16px 24px;
     padding-left: 18px;
 }
+
+#form{
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+    align-items:end;
+    padding: 16px 16px 6px;
+}
+
+#form label{
+    display: grid;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(63, 57, 101, 0.82);
+}
+
+#form input{
+    width: 75%;
+    padding: 11px 12px;
+    border: 1px solid rgba(231, 228, 252, 0.14);
+    border-radius: 14px;
+    background: rgba(10, 9, 20, 0.72);
+    color: #f5f2ff;
+    outline: none;
+}
+
+#form input:focus{
+    border-color: rgba(142, 85, 207, 0.65);
+    box-shadow: 0 0 0 4px rgba(186, 127, 255, 0.14);
+}
