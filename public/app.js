@@ -10,7 +10,17 @@ function setStatus(text){
 }
 
 function renderSeed(seed){
-    seedEl.textContent = seed ? JSON.stringify(seed, null, 2) : "-";
+    if (!seed){
+        seedEl.textContent = "-";
+        return;
+    }
+    const title = seed.title || "unknown album";
+    const artist = seed.artistName || "Unknown artist";
+
+    seedEl.innerHTML = `
+        <div class="seed-title">${title}</div>
+        <div class="seed-artist">${artist}</div>
+        `;
 }
 
 function renderResults(items){

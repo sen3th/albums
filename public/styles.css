@@ -16,7 +16,7 @@ h2{
 
 p{
     margin: 10px 16px;
-    color: rgba(231, 228, 252, 0.78);
+    color: rgba(52, 51, 61, 0.78);
 }
 
 body::before{
@@ -108,4 +108,21 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     #submit{
         width: 100%;
     }
+}
+
+.seed-summary{
+    display: grid;
+    gap: 4px;
+    padding: 2px 0;
+}
+
+.seed-title{
+    font-size: 18px;
+    font-weight: 700;
+    color: #2f2d35;
+}
+
+.seed-artist{
+    font-size: 14px;
+    color: rgba(57, 56, 63, 0.72);
 }
