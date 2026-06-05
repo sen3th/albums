@@ -26,6 +26,7 @@ similarRouter.get("/by-artist", async (req, res) => {
             .map((rg)=>({
                 id: rg.id,
                 title: rg.title,
+                artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
                 primaryType: rg["primary-type"] ?? null,
                 firstReleaseDate: rg["first-release-date"] ?? null,
             }));
@@ -71,6 +72,7 @@ similarRouter.get("/from-album", async (req, res) => {
             .map((rg) => ({
                 id: rg.id,
                 title: rg.title,
+                artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
                 primaryType: rg["primary-type"] ?? null,
                 firstReleaseDate: rg["first-release-date"] ?? null,
             }));
@@ -79,6 +81,7 @@ similarRouter.get("/from-album", async (req, res) => {
             seed: {
                 id: seed.id,
                 title: seed.title,
+                artistName: seed["artist-credit"]?.[0]?.artist?.name ?? null,
                 artistId: seedArtistId,
             },
             items,

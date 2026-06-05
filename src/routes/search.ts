@@ -20,6 +20,7 @@ searchRouter.get("/release-groups", async (req, res) =>{
         const items = data["release-groups"].map((rg)=>({
             id: rg.id,
             title: rg.title,
+            artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
             primaryType: rg["primary-type"] ?? null,
             artistCredit:
                 rg["artist-credit"]?.map((ac) => ({
