@@ -20,7 +20,7 @@ export async function mbGetJson<T>(
 
     url.searchParams.set("fmt", "json");
 
-    const res = await fetch(url, {
+    const res = await fetch(url.toString(), {
         headers: {
             "User-Agent": userAgent(),
             "Accept": "application/json"

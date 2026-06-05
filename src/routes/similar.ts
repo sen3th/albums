@@ -22,24 +22,25 @@ similarRouter.get("/by-artist", async (req, res) => {
 
     try {
         const data = await getArtistReleaseGroups({ artistId: artistId.trim(), limit});
-        const items = data["release-groups"]
-            .filter((rg) => (exclude ? rg.id !== exclude : true))
-            .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
-            .map(async (rg) => {
-                const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
-                const coverUrl = release ? await getCoverArtUrl(release.id) : null;
+        const items = await Promise.all(
+            data["release-groups"]
+                .filter((rg) => (exclude ? rg.id !== exclude : true))
+                .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
+                .map(async (rg) => {
+                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
+                    const coverUrl = release ? await getCoverArtUrl(release.id) : null;
 
-                return {
-                    id: rg.id,
-                    title: rg.title,
-                    artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
-                    primaryType: rg["primary-type"] ?? null,
-                    firstReleaseDate: rg["first-release-date"] ?? null,
-                    coverUrl,
-                };
-            })
-            ;
-            return res.json({ items });
+                    return {
+                        id: rg.id,
+                        title: rg.title,
+                        artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
+                        primaryType: rg["primary-type"] ?? null,
+                        firstReleaseDate: rg["first-release-date"] ?? null,
+                        coverUrl,
+                    };
+                })
+        );
+        return res.json({ items });
 
     } catch {
         return res.json({ items: [], error: "musicbrainz error"});
