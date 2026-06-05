@@ -60,3 +60,17 @@ export async function getArtistReleaseGroups(params: {
         limit,
     });
 }
+
+export async function getReleaseForReleaseGroup(params: {
+    releaseGroupId: string;
+}): Promise<{ id:string } | null>{
+    const {releaseGroupId} = params;
+    const data = await mbGetJson<{ releases?: Array<{ id: string }>}>(
+        "/release",
+        {
+            rgid: releaseGroupId,
+            limit: 1,
+        }
+    );
+    return data.releases?.[0] ?? null;
+}

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { getArtistReleaseGroups } from "../lib/musicbrainz";
 import { searchReleaseGroups } from "../lib/musicbrainz";
+import { getReleaseForReleaseGroup } from "../lib/musicbrainz";
+import { getCoverArtUrl } from "../lib/coverart";
 
 export const similarRouter = Router();
 
@@ -23,13 +25,20 @@ similarRouter.get("/by-artist", async (req, res) => {
         const items = data["release-groups"]
             .filter((rg) => (exclude ? rg.id !== exclude : true))
             .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
-            .map((rg)=>({
-                id: rg.id,
-                title: rg.title,
-                artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
-                primaryType: rg["primary-type"] ?? null,
-                firstReleaseDate: rg["first-release-date"] ?? null,
-            }));
+            .map(async (rg) => {
+                const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
+                const coverUrl = release ? await getCoverArtUrl(release.id) : null;
+
+                return {
+                    id: rg.id,
+                    title: rg.title,
+                    artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
+                    primaryType: rg["primary-type"] ?? null,
+                    firstReleaseDate: rg["first-release-date"] ?? null,
+                    coverUrl,
+                };
+            })
+            ;
             return res.json({ items });
 
     } catch {
@@ -66,16 +75,23 @@ similarRouter.get("/from-album", async (req, res) => {
 
         const sim = await getArtistReleaseGroups({ artistId: seedArtistId, limit });
 
-        const items = sim["release-groups"]
-            .filter((rg) => rg.id !== seed.id)
-            .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
-            .map((rg) => ({
-                id: rg.id,
-                title: rg.title,
-                artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
-                primaryType: rg["primary-type"] ?? null,
-                firstReleaseDate: rg["first-release-date"] ?? null,
-            }));
+        const items = await Promise.all(
+            sim["release-groups"]
+                .filter((rg) => rg.id !== seed.id)
+                .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
+                .map(async (rg) => {
+                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
+                    const coverUrl = release ? await getCoverArtUrl(release.id) : null;
+                    return {
+                        id: rg.id,
+                        title: rg.title,
+                        artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
+                        primaryType: rg["primary-type"] ?? null,
+                        firstReleaseDate: rg["first-release-date"] ?? null,
+                        coverUrl,
+                    };
+                })
+        );
 
         return res.json({
             seed: {
