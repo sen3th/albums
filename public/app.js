@@ -23,11 +23,31 @@ function renderSeed(seed){
         `;
 }
 
+function escapeHtml(text){
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
 function renderResults(items){
     resultsEl.innerHTML = "";
     for (const it of items){
         const li = document.createElement("li");
-        li.textContent = `${it.title}${it.firstReleaseDate ? ` (${it.firstReleaseDate})` : ""}`;
+        li.className = "album-card";
+
+        li.innerHTML = `
+        <div class="album-cover-wrap">
+            <div class="album-cover-placeholder"></div>
+        </div>
+
+        <div class="album-data">
+            <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
+            <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>
+        </div>
+        `;
         resultsEl.appendChild(li);
     }
 }
