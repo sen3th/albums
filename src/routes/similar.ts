@@ -6,6 +6,32 @@ import { getCoverArtUrl } from "../lib/coverart";
 
 export const similarRouter = Router();
 
+function isStudioAlbum(rg: {
+    "primary-type"?: string| null;
+    "secondary-types"?: string[];
+    "first-release-date"?: string | null;
+}): boolean {
+    if (rg["primary-type"] !== "Album") return false;
+
+    const secondary = rg["secondary-types"] ?? [];
+    const blocked = new Set([
+        "Live",
+        "Compilation",
+        "Demo",
+        "Interview",
+        "Mixtape",
+        "Soundtrack",
+        "Remix",
+        "Spokenword",
+        "DJ-mix",
+    ])
+
+    if (secondary.some((t) => blocked.has(t))) return false;
+    if (!rg["first-release-date"]) return false;
+
+    return true;
+}
+
 similarRouter.get("/by-artist", async (req, res) => {
     const artistId = typeof req.query.artistId === "string" ? req.query.artistId: "";
     const exclude = typeof req.query.exclude === "string" ? req.query.exclude : undefined;
@@ -25,7 +51,7 @@ similarRouter.get("/by-artist", async (req, res) => {
         const items = await Promise.all(
             data["release-groups"]
                 .filter((rg) => (exclude ? rg.id !== exclude : true))
-                .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
+                .filter((rg) => (!albumsOnly ? true : isStudioAlbum(rg)))
                 .map(async (rg) => {
                     const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
                     const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
@@ -79,7 +105,7 @@ similarRouter.get("/from-album", async (req, res) => {
         const items = await Promise.all(
             sim["release-groups"]
                 .filter((rg) => rg.id !== seed.id)
-                .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
+                .filter((rg) => (!albumsOnly ? true : isStudioAlbum(rg)))
                 .map(async (rg) => {
                     const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
                     const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
