@@ -39,14 +39,7 @@ function renderResults(items){
         li.className = "album-card";
 
         li.innerHTML = `
-        <div class="album-cover-wrap">
-            ${
-                it.coverUrl
-                    ? `<img class="album-cover" src="${escapeHtml(it.coverUrl)}" loading="lazy" />`
-                    : `<div class="album-cover-placeholder"></div>`
-            }
-        </div>
-
+        <div class="album-symbol"></div>
         <div class="album-data">
             <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
             <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>

@@ -175,9 +175,11 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     color: rgba(231, 228, 252, 0.72);
 }
 
-.album-cover{
+.album-symbol{
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 14px;
+    background: linear-gradient(pink, lightblue);
     object-fit: cover;
     display: block;
 }
