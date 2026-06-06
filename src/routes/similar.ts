@@ -27,8 +27,8 @@ similarRouter.get("/by-artist", async (req, res) => {
                 .filter((rg) => (exclude ? rg.id !== exclude : true))
                 .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
                 .map(async (rg) => {
-                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
-                    const coverUrl = release ? await getCoverArtUrl(release.id) : null;
+                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
+                    const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
 
                     return {
                         id: rg.id,
@@ -81,8 +81,8 @@ similarRouter.get("/from-album", async (req, res) => {
                 .filter((rg) => rg.id !== seed.id)
                 .filter((rg) => (!albumsOnly ? true : rg["primary-type"] === "Album"))
                 .map(async (rg) => {
-                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id });
-                    const coverUrl = release ? await getCoverArtUrl(release.id) : null;
+                    const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
+                    const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
                     return {
                         id: rg.id,
                         title: rg.title,
