@@ -5,6 +5,12 @@ const statusEl = document.querySelector("#status");
 const seedEl = document.querySelector("#seed");
 const resultsEl = document.querySelector("#results");
 
+function setLoading(isLoading){
+    const submit = document.querySelector("#submit");
+    submit.disabled = isLoading;
+    submit.textContent = isLoading ? "searching..." : "find similar albums";
+}
+
 function setStatus(text){
     statusEl.textContent = text || "";
 }
@@ -55,6 +61,8 @@ form.addEventListener("submit", async (e) => {
     const album = document.getElementById("album").value.trim();
     const artist = document.getElementById("artist").value.trim();
 
+    
+    setLoading(true);
     setStatus("searching..");
     renderSeed(null);
     renderResults([]);
@@ -75,8 +83,16 @@ form.addEventListener("submit", async (e) => {
         }
         renderSeed(data.seed);
         renderResults(data.items || []);
+
+        if (!(data.items || [].length)){
+            setStatus("No albums found");
+            return;
+        }
+        
         setStatus(`done. found ${(data.items || []).length} results.`);
     } catch {
         setStatus("cant reach the api");
+    } finally {
+        setLoading(false);
     }
 });

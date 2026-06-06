@@ -101,6 +101,11 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     transform: translateY(1px);
 }
 
+#submit:disabled{
+    opacity: 0.75;
+    cursor: progress;
+}
+
 @media (max-width: 820px){
     #form{
         grid-template-columns: 1fr;
