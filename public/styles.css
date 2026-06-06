@@ -174,3 +174,10 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     font-size: 13px;
     color: rgba(231, 228, 252, 0.72);
 }
+
+.album-cover{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

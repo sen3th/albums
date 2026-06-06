@@ -40,7 +40,11 @@ function renderResults(items){
 
         li.innerHTML = `
         <div class="album-cover-wrap">
-            <div class="album-cover-placeholder"></div>
+            ${
+                it.coverUrl
+                    ? `<img class="album-cover" src="${escapeHtml(it.coverUrl)}" loading="lazy" />`
+                    : `<div class="album-cover-placeholder"></div>`
+            }
         </div>
 
         <div class="album-data">
