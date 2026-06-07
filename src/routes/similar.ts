@@ -6,6 +6,10 @@ import { getCoverArtUrl } from "../lib/coverart";
 
 export const similarRouter = Router();
 
+function looksLikeJunk(title: string): boolean {
+    return /^\d{4}[-‐]\d{2}[-‐]\d{2}/.test(title) || /live|bootleg|concert|tour|festival/i.test(title);
+}
+
 function isRelevantAlbum(rg: {
     "primary-type"?: string | null;
     "secondary-types"?: string[];
@@ -36,6 +40,8 @@ function isRelevantAlbum(rg: {
     if (d.includes("recorded at")) return false;
     if (d.includes("concert")) return false;
 
+    if (looksLikeJunk(rg.title ?? "")) return false;
+
     return true;
 }
 
@@ -57,14 +63,7 @@ similarRouter.get("/by-artist", async (req, res) => {
         const data = await getArtistReleaseGroups({ artistId: artistId.trim(), limit });
 
         const releaseGroups = data["release-groups"].filter((rg) => (exclude ? rg.id !== exclude : true));
-
-        const filtered = albumsOnly
-            ? releaseGroups.filter(isRelevantAlbum)
-            : releaseGroups;
-
-        const finalGroups = filtered.length > 0
-            ? filtered
-            : releaseGroups.filter((rg) => rg["primary-type"] === "Album");
+        const finalGroups = albumsOnly ? releaseGroups.filter(isRelevantAlbum) : releaseGroups;
 
         const items = await Promise.all(
             finalGroups.map(async (rg) => {
@@ -112,20 +111,21 @@ similarRouter.get("/from-album", async (req, res) => {
 
         const seedArtistId = seed["artist-credit"]?.[0]?.artist?.id;
         if (!seedArtistId) {
-            return res.json({ seed: { id: seed.id, title: seed.title }, items: [] });
+            return res.json({
+                seed: {
+                    id: seed.id,
+                    title: seed.title,
+                    artistName: seed["artist-credit"]?.[0]?.artist?.name ?? null,
+                    artistId: null,
+                },
+                items: [],
+            });
         }
 
         const sim = await getArtistReleaseGroups({ artistId: seedArtistId, limit });
 
         const releaseGroups = sim["release-groups"].filter((rg) => rg.id !== seed.id);
-
-        const filtered = albumsOnly
-            ? releaseGroups.filter(isRelevantAlbum)
-            : releaseGroups;
-
-        const finalGroups = filtered.length > 0
-            ? filtered
-            : releaseGroups.filter((rg) => rg["primary-type"] === "Album");
+        const finalGroups = albumsOnly ? releaseGroups.filter(isRelevantAlbum) : releaseGroups;
 
         const items = await Promise.all(
             finalGroups.map(async (rg) => {
