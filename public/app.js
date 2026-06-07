@@ -4,6 +4,8 @@ const form = document.querySelector("#form");
 const statusEl = document.querySelector("#status");
 const seedEl = document.querySelector("#seed");
 const resultsEl = document.querySelector("#results");
+const autocompleteEl = document.querySelector("#autocomplete");
+let autocompleteTimer = null;
 
 function setLoading(isLoading){
     const submit = document.querySelector("#submit");
@@ -96,3 +98,46 @@ form.addEventListener("submit", async (e) => {
         setLoading(false);
     }
 });
+
+function renderAutocomplete(items){
+    autocompleteEl.innerHTML = "";
+
+    for (const item of items){
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "autocomplete-item";
+        button.innerHTML = `
+            <span class="autocomplete-title">${escapeHtml(item.title || "untitled")}</span>
+            <span class="autocomplete-artist">${escapeHtml(item.artistName || "unknown artist")}</span>
+        `;
+        button.addEventListener("click", () => {
+            document.getElementById("album").value = item.title || "";
+            if (item.artistName) {
+                document.getElementById("artist").value = item.artistName;
+            }
+            autocompleteEl.innerHTML = "";
+        })
+
+        autocompleteEl.appendChild(button);   
+    }
+}
+
+document.getElementById("album").addEventListener("input", () => {
+    const q = document.getElementById("album").value.trim();
+
+    clearTimeout(autocompleteTimer);
+    if (q.length < 2){
+        autocompleteEl.innerHTML = "";
+        return;
+    }
+
+    autocompleteTimer = setTimeout(async ()=>{
+        try{
+            const res = await fetch(`${API_BASE}/api/search/release-groups?album=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            renderAutocomplete(data.items || []);
+        } catch {
+            autocompleteEl.innerHTML = "";
+        }
+    }, 250);
+})
