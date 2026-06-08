@@ -99,6 +99,19 @@ form.addEventListener("submit", async (e) => {
     }
 });
 
+function rankAutocomplete(items, q){
+    const query = q.toLowerCase();
+    return [...items].sort((a,b) => {
+        const aExact = String(a.title || "").toLowerCase() === query ? 1 : 0;
+        const bExact = String(b.title || "").toLowerCase() === query ? 1 : 0;
+        if (aExact !== bExact) return bExact - aExact;
+
+        const aScore = (a.want || 0) + (a.have || 0);
+        const bScore = (b.want || 0) + (b.have || 0);
+        return bScore - aScore;
+    })
+}
+
 function renderAutocomplete(items){
     autocompleteEl.innerHTML = "";
 
@@ -135,7 +148,7 @@ document.getElementById("album").addEventListener("input", () => {
         try{
             const res = await fetch(`${API_BASE}/api/discogs/release-groups?q=${encodeURIComponent(q)}`);
             const data = await res.json();
-            renderAutocomplete(data.items || []);
+            renderAutcomplete(rankAutocomplete(data.items || [], q));
         } catch {
             autocompleteEl.innerHTML = "";
         }
