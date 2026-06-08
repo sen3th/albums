@@ -63,14 +63,14 @@ form.addEventListener("submit", async (e) => {
     const album = document.getElementById("album").value.trim();
     const artist = document.getElementById("artist").value.trim();
 
-    
+     
     setLoading(true);
     setStatus("searching..");
     renderSeed(null);
     renderResults([]);
 
-    const url = new URL(`${API_BASE}/api/similar/from-album`);
-    url.searchParams.set("album", album);
+    const url = new URL(`${API_BASE}/api/discogs/from-release`);
+    url.searchParams.set("artist", artist || album);
     if (artist) url.searchParams.set("artist", artist);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
