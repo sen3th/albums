@@ -6,7 +6,7 @@ export const discogsSearchRouter = Router();
 discogsSearchRouter.get("/release-groups", async (req, res) => {
     const q = typeof req.query.q === "string" ? req.query.q.trim() : "";
     if (!q) {
-        return res.status(400).json({ error: "q isrequired"});
+        return res.status(400).json({ error: "q is required"});
     }
 
     try {
@@ -23,7 +23,7 @@ discogsSearchRouter.get("/release-groups", async (req, res) => {
         q,
         type: "release",
         per_page: 10,
-    })
+    });
 
     const items = (data.results ?? [])
         .filter((r) => r.type === "release")
@@ -37,8 +37,8 @@ discogsSearchRouter.get("/release-groups", async (req, res) => {
         }))
         .sort((a, b) => (b.want + b.have) - (a.want + a.have));
 
-        return res.json({ items});
+        return res.json({ items });
 }catch {
-    return res.json({ error: "discogs search failed" });
+    return res.status(500).json({ error: "discogs search failed" });
 }
 });
