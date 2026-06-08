@@ -63,14 +63,14 @@ form.addEventListener("submit", async (e) => {
     const album = document.getElementById("album").value.trim();
     const artist = document.getElementById("artist").value.trim();
 
-    
+     
     setLoading(true);
     setStatus("searching..");
     renderSeed(null);
     renderResults([]);
 
-    const url = new URL(`${API_BASE}/api/similar/from-album`);
-    url.searchParams.set("album", album);
+    const url = new URL(`${API_BASE}/api/discogs/from-release`);
+    url.searchParams.set("artist", artist || album);
     if (artist) url.searchParams.set("artist", artist);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
@@ -98,6 +98,19 @@ form.addEventListener("submit", async (e) => {
         setLoading(false);
     }
 });
+
+function rankAutocomplete(items, q){
+    const query = q.toLowerCase();
+    return [...items].sort((a,b) => {
+        const aExact = String(a.title || "").toLowerCase() === query ? 1 : 0;
+        const bExact = String(b.title || "").toLowerCase() === query ? 1 : 0;
+        if (aExact !== bExact) return bExact - aExact;
+
+        const aScore = (a.want || 0) + (a.have || 0);
+        const bScore = (b.want || 0) + (b.have || 0);
+        return bScore - aScore;
+    })
+}
 
 function renderAutocomplete(items){
     autocompleteEl.innerHTML = "";
@@ -133,9 +146,9 @@ document.getElementById("album").addEventListener("input", () => {
 
     autocompleteTimer = setTimeout(async ()=>{
         try{
-            const res = await fetch(`${API_BASE}/api/search/release-groups?album=${encodeURIComponent(q)}`);
+            const res = await fetch(`${API_BASE}/api/discogs/release-groups?q=${encodeURIComponent(q)}`);
             const data = await res.json();
-            renderAutocomplete(data.items || []);
+            renderAutcomplete(rankAutocomplete(data.items || [], q));
         } catch {
             autocompleteEl.innerHTML = "";
         }
