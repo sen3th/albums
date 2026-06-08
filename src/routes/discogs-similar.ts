@@ -7,8 +7,8 @@ discogsSimilarRouter.get("/from-release", async (req, res) => {
     const masterId = typeof req.query.masterId === "string" ? req.query.masterId.trim() : "";
     const artist = typeof req.query.artist === "string" ? req.query.artist.trim() : "";
 
-    if (!masterId || !artist) {
-        return res.status(400).json({ error: "id or artist is required" });
+    if (!masterId && !artist) {
+        return res.status(400).json({ error: "masterId or artist is required" });
     }
 
     try {
