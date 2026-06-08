@@ -133,7 +133,7 @@ document.getElementById("album").addEventListener("input", () => {
 
     autocompleteTimer = setTimeout(async ()=>{
         try{
-            const res = await fetch(`${API_BASE}/api/search/release-groups?album=${encodeURIComponent(q)}`);
+            const res = await fetch(`${API_BASE}/api/discogs/release-groups?q=${encodeURIComponent(q)}`);
             const data = await res.json();
             renderAutocomplete(data.items || []);
         } catch {
