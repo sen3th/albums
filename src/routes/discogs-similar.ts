@@ -8,7 +8,7 @@ discogsSimilarRouter.get("/from-release", async (req, res) => {
     const artist = typeof req.query.artist === "string" ? req.query.artist.trim() : "";
 
     if (!masterId || !artist) {
-        return res.json({ error: "id or artist is required" });
+        return res.status(400).json({ error: "id or artist is required" });
     }
 
     try {
@@ -44,13 +44,13 @@ discogsSimilarRouter.get("/from-release", async (req, res) => {
                 ? {
                     id:seed.id,
                     title: seed.title,
-                    artistName: seed.artisr?.[0]?.name ?? null,
-                    maserId: seed.id,
+                    artistName: seed.artists?.[0]?.name ?? null,
+                    masterId: seed.id,
                 }
                 : null,
             items,
         })
     } catch {
-        return res.json({ error: "discogs similar search failed"});
+        return res.status(500).json({ error: "discogs similar search failed"});
     }
 })
