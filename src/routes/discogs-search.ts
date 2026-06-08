@@ -5,7 +5,9 @@ export const discogsSearchRouter = Router();
 
 discogsSearchRouter.get("/release-groups", async (req, res) => {
     const q = typeof req.query.q === "string" ? req.query.q.trim() : "";
-    if (!q) return res.json({ error: "q's required"});
+    if (!q) {
+        return res.status(400).json({ error: "q isrequired"});
+    }
 
     try {
         const data = await discogsGetJson<{
