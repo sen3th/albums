@@ -22,5 +22,5 @@ app.listen(config.port, "0.0.0.0", ()=>{
     console.log(`runing on http://localhost:${config.port}`);
 });
 
-app.use("./api/discogs", discogsSearchRouter);
-app.use("./api/discogs", discogsSimilarRouter);
+app.use("/api/discogs", discogsSearchRouter);
+app.use("/api/discogs", discogsSimilarRouter);
