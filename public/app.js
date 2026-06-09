@@ -70,8 +70,10 @@ form.addEventListener("submit", async (e) => {
     renderResults([]);
 
     const url = new URL(`${API_BASE}/api/discogs/from-release`);
-    url.searchParams.set("artist", artist || album);
+    const discogsId = document.getElementById("album").dataset.discogsId || "";
+    if (discogsId) url.searchParams.set("masterId", discogsId);
     if (artist) url.searchParams.set("artist", artist);
+    if (album) url.searchParams.set("album", album);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
 
@@ -128,6 +130,7 @@ function renderAutocomplete(items){
             if (item.artistName) {
                 document.getElementById("artist").value = item.artistName;
             }
+            document.getElementById("album").dataset.discogsId = String(item.id);
             autocompleteEl.innerHTML = "";
         })
 
@@ -148,7 +151,7 @@ document.getElementById("album").addEventListener("input", () => {
         try{
             const res = await fetch(`${API_BASE}/api/discogs/release-groups?q=${encodeURIComponent(q)}`);
             const data = await res.json();
-            renderAutcomplete(rankAutocomplete(data.items || [], q));
+            renderAutocomplete(rankAutocomplete(data.items || [], q));
         } catch {
             autocompleteEl.innerHTML = "";
         }
