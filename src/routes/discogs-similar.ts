@@ -29,7 +29,17 @@ discogsSimilarRouter.get("/from-release", async (req, res) => {
         });
 
         const seedTitle = String(seed?.title || "").toLowerCase();
-        const items = (search.results ?? [])
+
+        const seen = new Set<string>();
+        const uniqueResults = (search.results ?? []).filter((r) => {
+            const key = String(r.master_id ?? `${String(r.title || "").toLowerCase()}::${String(r.artist || "").toLowerCase()}`);
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+
+        
+        const items = uniqueResults
             .filter((r) => String(r.title || "").toLowerCase() !== seedTitle)
             .map((r) => ({
                 id: r.id,
