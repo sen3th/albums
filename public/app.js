@@ -73,7 +73,6 @@ form.addEventListener("submit", async (e) => {
     const discogsId = document.getElementById("album").dataset.discogsId || "";
     if (discogsId) url.searchParams.set("masterId", discogsId);
     if (artist) url.searchParams.set("artist", artist);
-    if (album) url.searchParams.set("album", album);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
 
@@ -130,7 +129,7 @@ function renderAutocomplete(items){
             if (item.artistName) {
                 document.getElementById("artist").value = item.artistName;
             }
-            document.getElementById("album").dataset.discogsId = String(item.id);
+            document.getElementById("album").dataset.discogsId = String(item.masterId || item.id || "");
             autocompleteEl.innerHTML = "";
         })
 
