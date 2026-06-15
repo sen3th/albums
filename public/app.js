@@ -95,10 +95,12 @@ form.addEventListener("submit", async (e) => {
         renderSeed(data.seed);
         renderResults(data.items || []);
 
-        if (!(data.items || [].length)){
-            setStatus("No albums found");
-            return;
-        }
+        const items = data.items || [];
+        renderResults(items);
+        setStatus(items.length
+            ? `found ${items.length} album${items.length === 1 ? "" : "s"}`
+            : "No similar albums found"
+        )
         
         setStatus(`done. found ${(data.items || []).length} results.`);
     } catch {
