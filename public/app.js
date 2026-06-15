@@ -42,15 +42,24 @@ function escapeHtml(text){
 
 function renderResults(items){
     resultsEl.innerHTML = "";
+    if (!items.length) return;
     for (const it of items){
         const li = document.createElement("li");
         li.className = "album-card";
 
+        const coverHtml = it.coverUrl
+            ? `<img class="album-cover" src="${escapeHtml(it.coverUrl)}" alt="${escapeHtml(it.title || "")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : "";
+
         li.innerHTML = `
-        <div class="album-symbol"></div>
+        <div class="album-cover-wrap">
+            ${coverHtml}
+            <div class="album-cover-placeholder" style="${it.coverUrl ? "display:none" : ""}"></div>
+        </div>
         <div class="album-data">
             <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
             <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>
+            ${it.firstReleaseDate ? `<div class="album-year">${escapeHtml(String(it.firstReleaseDate).slice(0, 4))}</div>` : ""}
         </div>
         `;
         resultsEl.appendChild(li);
