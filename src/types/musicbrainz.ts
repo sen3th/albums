@@ -1,12 +1,13 @@
 export type MusicBrainzArtistCredit = Array<{
     name: string;
-    artist: { id: string; name: string };
+    artist: { id: string; name: string;};
 }>;
 
 export type MusicBrainzReleaseGroup = {
     id: string;
     title: string;
-    "primary-type"?: string | null;
+    "primary-type"?: string;
+    "first-release-date"?: string;
     "secondary-types"?: string[];
     "artist-credit"?: MusicBrainzArtistCredit;
     disambiguation?: string | null;
