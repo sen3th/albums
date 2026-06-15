@@ -78,9 +78,8 @@ form.addEventListener("submit", async (e) => {
     renderSeed(null);
     renderResults([]);
 
-    const url = new URL(`${API_BASE}/api/discogs/from-release`);
-    const discogsId = document.getElementById("album").dataset.discogsId || "";
-    if (discogsId) url.searchParams.set("masterId", discogsId);
+    const url = new URL(`${API_BASE}/api/similar/from-album`);
+    url.searchParams.set("album", album);
     if (artist) url.searchParams.set("artist", artist);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
