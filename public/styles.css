@@ -12,9 +12,19 @@ body{
 }
 
 h1{
-    margin: 22px 16px 6px;
-    font-size: 28px;
-    letter-spacing: 0.2px;
+    margin: 0 0 18px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ede8ff;
+    letter-spacing: -0.3px;
+}
+
+h1 span{
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13px;
+    color: rgba(210, 195, 255, 0.35);
+    margin-left: 8px;
 }
 
 h2{
