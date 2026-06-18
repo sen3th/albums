@@ -8,7 +8,9 @@ export type MusicBrainzReleaseGroup = {
     title: string;
     "primary-type"?: string;
     "first-release-date"?: string;
+    "secondary-types"?: string[];
     "artist-credit"?: MusicBrainzArtistCredit;
+    disambiguation?: string | null;
 };
 
 export type MusicBrainzReleaseGroupSearchResponse = {
