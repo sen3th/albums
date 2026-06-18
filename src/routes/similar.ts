@@ -1,158 +1,39 @@
 import { Router } from "express";
-import { getArtistReleaseGroups } from "../lib/musicbrainz";
 import { searchReleaseGroups } from "../lib/musicbrainz";
-import { getReleaseForReleaseGroup } from "../lib/musicbrainz";
-import { getCoverArtUrl } from "../lib/coverart";
+import { getSimilarAlbums } from "../lib/lastfm";
 
 export const similarRouter = Router();
 
-function looksLikeJunk(title: string): boolean {
-    return /^\d{4}[-‐]\d{2}[-‐]\d{2}/.test(title) || /live|bootleg|concert|tour|festival/i.test(title);
-}
-
-function isRelevantAlbum(rg: {
-    "primary-type"?: string | null;
-    "secondary-types"?: string[];
-    title?: string;
-    disambiguation?: string | null;
-}): boolean {
-    if (rg["primary-type"] !== "Album") return false;
-
-    const secondary = rg["secondary-types"] ?? [];
-    const blocked = new Set([
-        "Live",
-        "Compilation",
-        "Demo",
-        "Interview",
-        "Mixtape/Street",
-        "Soundtrack",
-        "Spokenword",
-        "Remix",
-        "DJ-mix",
-    ]);
-
-    if (secondary.some((t) => blocked.has(t))) return false;
-
-    const d = (rg.disambiguation ?? "").toLowerCase();
-    if (d.includes("live")) return false;
-    if (d.includes("compilation")) return false;
-    if (d.includes("bootleg")) return false;
-    if (d.includes("recorded at")) return false;
-    if (d.includes("concert")) return false;
-
-    if (looksLikeJunk(rg.title ?? "")) return false;
-
-    return true;
-}
-
-similarRouter.get("/by-artist", async (req, res) => {
-    const artistId = typeof req.query.artistId === "string" ? req.query.artistId : "";
-    const exclude = typeof req.query.exclude === "string" ? req.query.exclude : undefined;
-
-    const limitRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : 25;
-    const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 25;
-
-    const albumsOnlyRaw = typeof req.query.albumsOnly === "string" ? req.query.albumsOnly : "1";
-    const albumsOnly = albumsOnlyRaw !== "0";
-
-    if (!artistId.trim()) {
-        return res.json({ error: "artistId is required" });
-    }
-
-    try {
-        const data = await getArtistReleaseGroups({ artistId: artistId.trim(), limit });
-
-        const releaseGroups = data["release-groups"].filter((rg) => (exclude ? rg.id !== exclude : true));
-        const finalGroups = albumsOnly ? releaseGroups.filter(isRelevantAlbum) : releaseGroups;
-
-        const items = await Promise.all(
-            finalGroups.map(async (rg) => {
-                const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
-                const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
-
-                return {
-                    id: rg.id,
-                    title: rg.title,
-                    artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
-                    primaryType: rg["primary-type"] ?? null,
-                    firstReleaseDate: rg["first-release-date"] ?? null,
-                    coverUrl,
-                };
-            })
-        );
-
-        return res.json({ items });
-    } catch {
-        return res.json({ items: [], error: "musicbrainz error" });
-    }
-});
-
 similarRouter.get("/from-album", async (req, res) => {
     const album = typeof req.query.album === "string" ? req.query.album : "";
-    const artist = typeof req.query.artist === "string" ? req.query.artist : undefined;
-
-    const limitRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : 25;
-    const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 25;
-
-    const albumsOnlyRaw = typeof req.query.albumsOnly === "string" ? req.query.albumsOnly : "1";
-    const albumsOnly = albumsOnlyRaw !== "0";
+    const artist = typeof req.query.artist === "string" ? req.query.artist : "";
 
     if (!album.trim()) {
         return res.json({ error: "album is required" });
     }
 
     try {
-        const search = await searchReleaseGroups({ album: album.trim(), artist, limit: 1 });
+        const search = await searchReleaseGroups({ album: album.trim(), artist: artist.trim() || undefined, limit: 1 });
         const seed = search["release-groups"][0];
 
-        if (!seed) {
-            return res.json({ seed: null, items: [] });
+        const seedTitle = seed?.title ?? album.trim();
+        const seedArtist = seed?.["artist-credit"]?.[0]?.artist?.name ?? artist.trim();
+
+        if (!seedArtist) {
+            return res.json({ seed: null, items: [], error: "couldn't resolve artist" });
         }
 
-        const seedArtistId = seed["artist-credit"]?.[0]?.artist?.id;
-        if (!seedArtistId) {
-            return res.json({
-                seed: {
-                    id: seed.id,
-                    title: seed.title,
-                    artistName: seed["artist-credit"]?.[0]?.artist?.name ?? null,
-                    artistId: null,
-                },
-                items: [],
-            });
-        }
-
-        const sim = await getArtistReleaseGroups({ artistId: seedArtistId, limit });
-
-        const releaseGroups = sim["release-groups"].filter((rg) => rg.id !== seed.id);
-        const finalGroups = albumsOnly ? releaseGroups.filter(isRelevantAlbum) : releaseGroups;
-
-        const items = await Promise.all(
-            finalGroups.map(async (rg) => {
-                const release = await getReleaseForReleaseGroup({ releaseGroupId: rg.id }).catch(() => null);
-                const coverUrl = release ? await getCoverArtUrl(release.id).catch(() => null) : null;
-
-                return {
-                    id: rg.id,
-                    title: rg.title,
-                    artistName: rg["artist-credit"]?.[0]?.artist?.name ?? null,
-                    primaryType: rg["primary-type"] ?? null,
-                    firstReleaseDate: rg["first-release-date"] ?? null,
-                    coverUrl,
-                };
-            })
-        );
+        const items = await getSimilarAlbums(seedArtist, seedTitle);
 
         return res.json({
-            seed: {
+            seed: seed ?{
                 id: seed.id,
                 title: seed.title,
-                artistName: seed["artist-credit"]?.[0]?.artist?.name ?? null,
-                artistId: seedArtistId,
-            },
+                artistName: seedArtist,
+            } : null,
             items,
         });
-    } catch {
-        return res.json({ seed: null, items: [], error: "musicbrainz error" });
+    } catch (e){
+        return res.json({ seed: null, items: [], error: "search failed" });
     }
 });

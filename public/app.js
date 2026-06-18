@@ -42,15 +42,24 @@ function escapeHtml(text){
 
 function renderResults(items){
     resultsEl.innerHTML = "";
+    if (!items.length) return;
     for (const it of items){
         const li = document.createElement("li");
         li.className = "album-card";
 
+        const coverHtml = it.coverUrl
+            ? `<img class="album-cover" src="${escapeHtml(it.coverUrl)}" alt="${escapeHtml(it.title || "")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : "";
+
         li.innerHTML = `
-        <div class="album-symbol"></div>
+        <div class="album-cover-wrap">
+            ${coverHtml}
+            <div class="album-cover-placeholder" style="${it.coverUrl ? "display:none" : ""}"></div>
+        </div>
         <div class="album-data">
             <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
             <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>
+            ${it.firstReleaseDate ? `<div class="album-year">${escapeHtml(String(it.firstReleaseDate).slice(0, 4))}</div>` : ""}
         </div>
         `;
         resultsEl.appendChild(li);
@@ -69,9 +78,8 @@ form.addEventListener("submit", async (e) => {
     renderSeed(null);
     renderResults([]);
 
-    const url = new URL(`${API_BASE}/api/discogs/from-release`);
-    const discogsId = document.getElementById("album").dataset.discogsId || "";
-    if (discogsId) url.searchParams.set("masterId", discogsId);
+    const url = new URL(`${API_BASE}/api/similar/from-album`);
+    url.searchParams.set("album", album);
     if (artist) url.searchParams.set("artist", artist);
     url.searchParams.set("limit", "25");
     url.searchParams.set("albumsOnly", "1");
@@ -87,10 +95,12 @@ form.addEventListener("submit", async (e) => {
         renderSeed(data.seed);
         renderResults(data.items || []);
 
-        if (!(data.items || [].length)){
-            setStatus("No albums found");
-            return;
-        }
+        const items = data.items || [];
+        renderResults(items);
+        setStatus(items.length
+            ? `found ${items.length} album${items.length === 1 ? "" : "s"}`
+            : "No similar albums found"
+        )
         
         setStatus(`done. found ${(data.items || []).length} results.`);
     } catch {
