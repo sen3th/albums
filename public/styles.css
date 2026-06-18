@@ -1,5 +1,14 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body{
-    height: 100%;
+    font-family: Inter, system-ui, sans-serif;
+    background: #0e0c18;
+    color: #ede8ff;
+    min-height: 100vh;
 }
 
 h1{
@@ -26,13 +35,13 @@ body::before{
     pointer-events: none;
 background: #EEAECA;
 background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
-  opacity: 0.2;
+  opacity: 0.6;
 }
 
 .container{
-    max-width: 920px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 18px 16px 40px;
+    padding: 36px 28px 64px;
     position: relative;
 }
 
