@@ -165,28 +165,25 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 
 #results{
     list-style: none;
-    padding: 0 16px 24px;
-    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+    gap: 12px;
 }
 
 .album-card{
-    border: 1px solid rgba(231, 228, 252, 0.12);
-    border-radius: 18px;
-    background: rgba(10, 9, 20, 0.72);
-    overflow: hidden;
-    padding: 12px;
-    display: grid;
-    gap: 10px;
+    border: 1px solid rgba(180, 140, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 9px;
 }
 
 .album-cover-wrap{
     aspect-ratio: 1/1;
-    border-radius: 14px;
+    border-radius: 7px;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(197, 212, 216, 0.18), rgba(235, 201, 242, 0.22));
+    margin-bottom: 9px;
+    background: linear-gradient(140deg, #3a2a5a, #2a3a6a);
 }
 
 .album-cover-placeholder{
@@ -201,9 +198,14 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 }
 
 .album-title{
+    font-size: 12px;
     font-weight: 700;
-    color: #f5f2ff;
-    line-height: 1.25;
+    color: #ede8ff;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
 }
 
 .album-artist{
