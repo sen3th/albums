@@ -26,8 +26,11 @@ function renderSeed(seed){
     const artist = seed.artistName || "Unknown artist";
 
     seedEl.innerHTML = `
-        <div class="seed-title">${title}</div>
-        <div class="seed-artist">${artist}</div>
+        <div class="seed-art"></div>
+        <div>
+            <div class="seed-title">${escapeHtml(seed.title || "unknown")}</div>
+            <div class="seed-artist">${escapeHtml(seed.artistName || "Unknown")}</div>
+        </div>
         `;
 }
 

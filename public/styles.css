@@ -63,7 +63,10 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 }
 
 #seed{
-    margin: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
 }
 
 #results{
@@ -141,14 +144,23 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 }
 
 .seed-title{
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
-    color: #2f2d35;
+    color: #ede8ff;
+}
+
+.seed-art{
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #8b5aaa, #788bb1);
+    flex-shrink: 0;
 }
 
 .seed-artist{
-    font-size: 14px;
-    color: rgba(57, 56, 63, 0.72);
+    font-size: 12px;
+    color: rgba(210, 195, 255, 0.4);
+    margin-top: 1px;
 }
 
 #results{
