@@ -293,3 +293,15 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     border-top: 1px solid rgba(180, 140, 255, 0.1);
     margin: 24px 0 20px;
 }
+
+footer{
+    text-align: center;
+    padding: 18px 28px;
+    font-size: 11px;
+    color: rgba(210, 195, 255, 0.28);
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
