@@ -224,35 +224,40 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 
 .autocomplete{
     display:grid;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 4px;
+    margin-top: 6px;
 }
 
 .autocomplete-item{
     text-align: left;
     width: 100%;
-    border: 1px solid rgba(231, 228, 252, 0.12);
-    background: rgba(10, 9, 20, 0.92);
-    color: #f8f5ff;
-    border-radius: 12px;
-    padding: 10px 12px;
+    border: 1px solid rgba(180, 140, 255, 0.15);
+    background: #13101f;
+    color: #ede8ff;
+    border-radius: 8px;
+    padding: 8px 11px;
     display: block;
     gap: 4px;
     cursor: pointer;
+    font-family: inherit;
 }
 
 .autocomplete-title{
+    font-size: 13px;
     font-weight: 700;
+    display: block;
 }
 
 .autocomplete-artist{
-    font-size: 12px;
-    color: rgba(231, 228, 252, 0.72);
+    font-size: 11px;
+    color: rgba(210, 195, 255, 0.4);
+    display: block;
+    margin-top: 1px;
 }
 
 .autocomplete-item:hover{
-    border-color: rgba(186, 127, 255, 0.45);
-    background: rgba(20, 18, 34, 0.98);
+    border-color: rgba(190, 150, 255, 0.35);
+    background: #1a1628;
 }
 
 .album-cover{
