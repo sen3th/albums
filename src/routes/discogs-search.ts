@@ -31,12 +31,11 @@ discogsSearchRouter.get("/release-groups", async (req, res) => {
         }>;
     }>("/database/search", {
         q,
-        type: "naster",
+        type: "master",
         per_page: 10,
     });
 
     const items = (data.results ?? [])
-        .filter((r) => r.type === "release")
         .map((r) => {
             const { title, artistName } = parseDiscogsTitle(r.title);
             return {
