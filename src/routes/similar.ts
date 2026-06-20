@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { searchReleaseGroups } from "../lib/musicbrainz";
 import { getSimilarAlbums } from "../lib/lastfm";
+import { lastfmGetJson } from "../lib/lastfm";
 
 export const similarRouter = Router();
 
@@ -23,17 +24,36 @@ similarRouter.get("/from-album", async (req, res) => {
             return res.json({ seed: null, items: [], error: "couldn't resolve artist" });
         }
 
+        let seedCoverUrl: string | null = null;
+        try{
+            const info = await lastfmGetJson<{
+                album?: {
+                    image?: Array<{ "#text": string; size: string }>;
+                };
+            }>({
+                method: "album.getInfo",
+                artist: seedArtist,
+                album: seedTitle,
+            });
+            const img = (info.album?.image ?? []).find((i) => i.size === "extralarge") ??
+                        (info.album?.image ?? []).find((i) => i.size === "large");
+            seedCoverUrl = img?.["#text"] || null;
+            if (seedCoverUrl?.includes("2a96cbd8b46e442fc41c2b86b821562f")) seedCoverUrl = null;
+        } catch{
+            seedCoverUrl = null;
+        }
+
         const items = await getSimilarAlbums(seedArtist, seedTitle);
 
         return res.json({
-            seed: seed ?{
-                id: seed.id,
+            seed: {
                 title: seed.title,
                 artistName: seedArtist,
-            } : null,
+                coverUrl: seedCoverUrl,
+            },
             items,
         });
-    } catch (e){
+    } catch{
         return res.json({ seed: null, items: [], error: "search failed" });
     }
 });
