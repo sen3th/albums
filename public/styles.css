@@ -326,3 +326,12 @@ a:hover{
     color: rgba(210, 195, 255, 0.35);
     text-decoration: none;
 }
+
+.seed-art{
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: linear-gradient(145deg, #8b5aaa, #4a6aaa);
+}

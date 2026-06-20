@@ -19,14 +19,15 @@ function setStatus(text){
 
 function renderSeed(seed){
     if (!seed){
-        seedEl.textContent = "-";
+        seedEl.textContent = "";
         return;
     }
-    const title = seed.title || "unknown album";
-    const artist = seed.artistName || "Unknown artist";
+    const coverHtml = seed.coverUrl
+        ?`<img class="seed-art" src="${escapeHtml(seed.coverUrl)}">`
+        : `<div class="seed-art"></div>`;
 
     seedEl.innerHTML = `
-        <div class="seed-art"></div>
+        ${coverHtml}
         <div>
             <div class="seed-title">${escapeHtml(seed.title || "unknown")}</div>
             <div class="seed-artist">${escapeHtml(seed.artistName || "Unknown")}</div>
