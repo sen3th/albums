@@ -54,6 +54,8 @@ function renderResults(items){
             ? `<img class="album-cover" src="${escapeHtml(it.coverUrl)}" alt="${escapeHtml(it.title || "")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
             : "";
 
+        const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(it.title + " " + (it.artistName || ""))}`;
+
         li.innerHTML = `
         <div class="album-cover-wrap">
             ${coverHtml}
@@ -62,7 +64,7 @@ function renderResults(items){
         <div class="album-data">
             <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
             <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>
-            ${it.firstReleaseDate ? `<div class="album-year">${escapeHtml(String(it.firstReleaseDate).slice(0, 4))}</div>` : ""}
+            <a class="album-spotify" href="${spotifyUrl}" target="_blank" rel="noopener">open in spotify</a>
         </div>
         `;
         resultsEl.appendChild(li);
