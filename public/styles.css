@@ -78,7 +78,7 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     gap: 8px;
-    align-items: end;
+    align-items: start;
 }
 
 #form label{
@@ -87,6 +87,7 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
     gap: 5px;
     font-size: 11px;
     color: rgba(210, 195, 255, 0.32);
+    position: relative;
 }
 
 #form input{
@@ -106,6 +107,7 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 }
 
 #submit{
+    margin-top: 16px;
     padding: 9px 16px;
     border: 1px solid rgba(180, 140, 255, 0.25);
     border-radius: 8px;
@@ -223,9 +225,14 @@ background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 23
 }
 
 .autocomplete{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
     display:grid;
     gap: 4px;
-    margin-top: 6px;
+    margin-top: 4px;
 }
 
 .autocomplete-item{
