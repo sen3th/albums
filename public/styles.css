@@ -308,4 +308,13 @@ a{
 
 a:hover{
     text-decoration: underline;
+    color: rgba(210, 195, 255, 0.75);
+}
+
+.album-spotify{
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 10px;
+    color: rgba(210, 195, 255, 0.35);
+    text-decoration: none;
 }
