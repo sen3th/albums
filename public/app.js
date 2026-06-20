@@ -55,6 +55,7 @@ function renderResults(items){
             : "";
 
         const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(it.title + " " + (it.artistName || ""))}`;
+        const appleMusicUrl = `https://music.apple.com/search?term=${encodeURIComponent(it.title + " " + (it.artistName || ""))}`;
 
         li.innerHTML = `
         <div class="album-cover-wrap">
@@ -65,6 +66,7 @@ function renderResults(items){
             <div class="album-title">${escapeHtml(it.title || "untitled")}</div>
             <div class="album-artist">${escapeHtml(it.artistName || "unknown artist")}</div>
             <a class="album-spotify" href="${spotifyUrl}" target="_blank" rel="noopener">open in spotify</a>
+            <a class="album-apple" href="${appleMusicUrl}" target="_blank" rel="noopener">open in apple music</a>
         </div>
         `;
         resultsEl.appendChild(li);

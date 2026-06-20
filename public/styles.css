@@ -318,3 +318,11 @@ a:hover{
     color: rgba(210, 195, 255, 0.35);
     text-decoration: none;
 }
+
+.album-apple{
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 10px;
+    color: rgba(210, 195, 255, 0.35);
+    text-decoration: none;
+}
